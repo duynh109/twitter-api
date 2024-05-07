@@ -7,8 +7,13 @@ import {
   registerController,
   forgotPasswordController,
   verifyForgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  getMeController,
+  updateMeController,
+  getProfileController,
+  followController
 } from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   loginValidator,
   registerValidator,
@@ -17,8 +22,12 @@ import {
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   forgotPasswordTokenValidator,
-  resetPasswordValidator
+  resetPasswordValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  followValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/User.requests'
 import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
@@ -92,4 +101,58 @@ usersRouter.post(
  */
 usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
 
+/**
+ * Description: Get my profile
+ * Path: /me
+ * Method: GET
+ * Header: { Authorization: Bearer <access_token> }
+ */
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+
+/**
+ * Description: Update my profile
+ * Path: /me
+ * Method: PATCH
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: UserSchema
+ */
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'avatar',
+    'username',
+    'cover_photo'
+  ]),
+  wrapRequestHandler(updateMeController)
+)
+
+/**
+ * Description: Get user profile
+ * Path: /:username
+ * Method: GET
+ */
+usersRouter.get('/:username', wrapRequestHandler(getProfileController))
+
+/**
+ * Description: Follow someone
+ * Path: /follow
+ * Method: POST
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: { followed_user_id: string}
+ */
+usersRouter.post(
+  '/follow',
+  accessTokenValidator,
+  verifiedUserValidator,
+  followValidator,
+  wrapRequestHandler(followController)
+)
 export default usersRouter
