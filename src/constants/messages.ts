@@ -45,7 +45,8 @@ export const USERS_MESSAGES = {
   WEBSITE_MUST_BE_A_STRING: 'Website must be a string',
   WEBSITE_LENGTH: 'Website lenght must be from 1 to 200',
   USERNAME_MUST_BE_A_STRING: 'Username must be a string',
-  USERNAME_LENGTH: 'Username lenght must be 1 to 50',
+  USERNAME_INVALID:
+    'Username must be 4-15 characters long and contain only letters, numbers, underscores, not only numbers',
   IMAGE_URL_MUST_BE_A_STRING: 'Image url must be a string',
   IMAGE_URL_LENGTH: 'Avatar length must be from 1 to 400',
   UPDATE_ME_SUCCESS: 'Update my profile successfully',
@@ -54,5 +55,9 @@ export const USERS_MESSAGES = {
   INVALID_USER_ID: 'Invalid user id',
   FOLLOWED: 'Followed',
   ALREADY_UNFOLLOWED: 'Already unfollowed',
-  UNFOLLOW_SUCCESS: 'Unfollow successfully'
+  UNFOLLOW_SUCCESS: 'Unfollow successfully',
+  USERNAME_EXISTED: 'Username already exists',
+  OLD_PASSWORD_NOT_MATCH: 'Old password not match',
+  CHANGE_PASSWORD_SUCCESS: 'Change password successfully',
+  GMAIL_NOT_VERIFIED: 'Gamil not verified'
 } as const
