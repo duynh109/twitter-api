@@ -5,7 +5,8 @@ import mediasRouter from './routes/medias.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
-import { UPLOAD_DIR } from './constants/dir'
+import staticRouter from './routes/static.routes'
+import { UPLOAD_VIDEO_DIR } from './constants/dir'
 config()
 
 databaseService.connect()
@@ -17,8 +18,8 @@ initFolder()
 app.use(express.json())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
-
-app.use('/static', express.static(UPLOAD_DIR))
+app.use('/static', staticRouter)
+app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 app.use(defaultErrorHandler)
 app.listen(port, () => {
