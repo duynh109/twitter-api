@@ -10,7 +10,12 @@ import { UPLOAD_VIDEO_DIR } from './constants/dir'
 import cors from 'cors'
 config()
 
-databaseService.connect()
+databaseService.connect().then(() => {
+  databaseService.indexUsers()
+  databaseService.indexRefreshTokens()
+  databaseService.indexVideoStatus()
+  databaseService.indexFollowers()
+})
 const app = express()
 app.use(cors())
 const port = process.env.PORT || 4000
