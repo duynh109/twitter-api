@@ -74,5 +74,10 @@ export const TWEET_MESSAGES = {
   CONTENT_MUST_BE_EMPTY_STRING: 'Content must be empty string',
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRINGS: 'Hashtags must be an array of strings',
   MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
-  MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Medias must be an array of media object'
+  MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Medias must be an array of media object',
+  CREATE_TWEET_SUCCESS: 'Create tweet successfully'
 } as const
+
+export const BOOKMARK_MESSAGE = {
+  BOOKMARK_SUCCESS: 'Bookmark successfully'
+}
