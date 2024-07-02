@@ -1,6 +1,6 @@
 import { ObjectId, WithId } from 'mongodb'
 import { TweetType } from '~/constants/enums'
-import { TweetReqBody } from '~/models/requests/Tweet.request'
+import { TweetReqBody } from '~/models/requests/Tweet.requests'
 import Hashtag from '~/models/schemas/Hashtag.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import databaseService from './database.services'

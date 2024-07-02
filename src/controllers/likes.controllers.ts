@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { LIKE_MESSAGE } from '~/constants/messages'
-import { LikeTweetReqBody } from '~/models/requests/Like.request'
+import { LikeTweetReqBody } from '~/models/requests/Like.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
 import bookmarkService from '~/services/bookmarks.services'
 import likeService from '~/services/likes.services'
