@@ -17,7 +17,12 @@ import { Server } from 'socket.io'
 import Conversation from './models/schemas/Conversation.schema'
 import conversationsRouter from './routes/conversations.routes'
 import { ObjectId } from 'mongodb'
-import { result } from 'lodash'
+import { verifyAccessToken } from './utils/common'
+import { TokenPayload } from './models/requests/User.requests'
+import { UserVerifyStatus } from './constants/enums'
+import { ErrorWithStatus } from './models/Errors'
+import { USERS_MESSAGES } from './constants/messages'
+import HTTP_STATUS from './constants/httpStatus'
 // import '~/utils/fake ' // fake dữ liệu
 
 config()
@@ -59,6 +64,27 @@ const users: {
     socket_id: string
   }
 } = {}
+io.use(async (socket, next) => {
+  const { Authorization } = socket.handshake.auth
+  const access_token = Authorization?.split(' ')[1]
+  console.log(access_token)
+  try {
+    const decoded_authorization = await verifyAccessToken(access_token)
+    const { verify } = decoded_authorization as TokenPayload
+    if (verify !== UserVerifyStatus.Verified) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_VERIFIED,
+        status: HTTP_STATUS.FORBIDDEN
+      })
+    }
+  } catch (error) {
+    next({
+      message: 'Unauthorized',
+      name: 'UnauthorizedError',
+      data: error
+    })
+  }
+})
 io.on('connection', (socket) => {
   console.log(`user ${socket.id} connected`)
   const user_id = socket.handshake.auth._id
@@ -66,7 +92,6 @@ io.on('connection', (socket) => {
   users[user_id] = {
     socket_id: socket.id
   }
-  console.log(users)
 
   socket.on('send_message', async (data) => {
     const { receiver_id, sender_id, content } = data.payload
