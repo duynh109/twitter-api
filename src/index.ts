@@ -59,11 +59,13 @@ const io = new Server(httpServer, {
     origin: process.env.CLIENT_URL
   }
 })
+
 const users: {
   [key: string]: {
     socket_id: string
   }
 } = {}
+
 io.use(async (socket, next) => {
   const { Authorization } = socket.handshake.auth
   const access_token = Authorization?.split(' ')[1]
@@ -78,6 +80,7 @@ io.use(async (socket, next) => {
     }
     // Truyền decoded_authorization vào socket để sử dụng ở các middleware khác
     socket.handshake.auth.decoded_authorization = decoded_authorization
+    socket.handshake.auth.access_token = access_token
     next()
   } catch (error) {
     next({
@@ -87,6 +90,7 @@ io.use(async (socket, next) => {
     })
   }
 })
+
 io.on('connection', (socket) => {
   console.log(`user ${socket.id} connected`)
   const { user_id } = socket.handshake.auth.decoded_authorization as TokenPayload
@@ -96,12 +100,20 @@ io.on('connection', (socket) => {
   }
   // console.log(users)
 
-  socket.use((packet, next) => {
-    next(new Error('hoho'))
+  socket.use(async (packet, next) => {
+    const { access_token } = socket.handshake.auth
+    try {
+      await verifyAccessToken(access_token)
+      next()
+    } catch (error) {
+      next(new Error('Unauthorized'))
+    }
   })
 
-  socket.on('error', (err) => {
-    console.log('error', err)
+  socket.on('error', (error) => {
+    if (error.message === 'Unauthorized') {
+      socket.disconnect()
+    }
   })
 
   socket.on('send_message', async (data) => {
