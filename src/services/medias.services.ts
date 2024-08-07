@@ -4,8 +4,7 @@ import sharp from 'sharp'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import path from 'path'
 import fsPromise from 'fs/promises'
-import { isProduction } from '~/utils/config'
-import { config } from 'dotenv'
+import { envConfig, isProduction } from '~/constants/config'
 import { EncodingStatus, MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
 import { encodeHLSWithMultipleVideoStreams } from '~/utils/video'
@@ -14,7 +13,6 @@ import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import { uploadFileToS3 } from '~/utils/s3'
 import mime from 'mime'
 import { rimrafSync } from 'rimraf'
-config()
 
 class Queue {
   items: string[]
@@ -179,8 +177,8 @@ class MediasService {
         queue.enqueue(file.filepath)
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}/master.m3u8`
-            : `http://localhost:${process.env.port}/static/video-hls/${newName}/master.m3u8`,
+            ? `${envConfig.host}/static/video-hls/${newName}/master.m3u8`
+            : `http://localhost:${envConfig.port}/static/video-hls/${newName}/master.m3u8`,
           type: MediaType.HLS
         }
       })

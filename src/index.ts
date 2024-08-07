@@ -31,7 +31,22 @@ const options = {
     info: {
       title: 'X Clone (Twitter API)',
       version: '1.0.0'
-    }
+    },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [
+      {
+        BearerAuth: []
+      }
+    ],
+    persistAuthorization: true
   },
   apis: ['./openapi/*.yaml'] // files containing annotations as above
 }
