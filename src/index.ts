@@ -1,20 +1,22 @@
 import express from 'express'
 import databaseService from './services/database.services'
-import usersRouter from './routes/users.routes'
-import mediasRouter from './routes/medias.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { initFolder } from './utils/file'
-import { config } from 'dotenv'
-import staticRouter from './routes/static.routes'
 import { UPLOAD_VIDEO_DIR } from './constants/dir'
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
+import staticRouter from './routes/static.routes'
+import usersRouter from './routes/users.routes'
 import tweetsRouter from './routes/tweets.routes'
+import mediasRouter from './routes/medias.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
-import { createServer } from 'http'
 import conversationsRouter from './routes/conversations.routes'
+import { createServer } from 'http'
+import { envConfig, isProduction } from '~/constants/config'
 import initSocket from './utils/socket'
+import helmet from 'helmet'
+import { rateLimit } from 'express-rate-limit'
 // import '~/utils/fake ' // fake dữ liệu
 // import YAML from 'yaml'
 // import fs from 'fs'
@@ -52,8 +54,6 @@ const options = {
 }
 const openapiSpecification = swaggerJsdoc(options)
 
-config()
-
 databaseService.connect().then(() => {
   databaseService.indexUsers()
   databaseService.indexRefreshTokens()
@@ -62,9 +62,21 @@ databaseService.connect().then(() => {
   databaseService.indexTweets()
 })
 const app = express()
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
+  // store: ... , // Redis, Memcached, etc. See below.
+})
+app.use(limiter)
 const httpServer = createServer(app)
-app.use(cors())
-const port = process.env.PORT || 4000
+app.use(helmet())
+const corsOptions: CorsOptions = {
+  origin: isProduction ? envConfig.clientUrl : '*'
+}
+app.use(cors(corsOptions))
+const port = envConfig.port
 // Tạo folder upload
 initFolder()
 

@@ -1,7 +1,6 @@
 import { config } from 'dotenv'
 import argv from 'minimist'
 const options = argv(process.argv.slice(2))
-console.log(options)
 config({
   path: options.env ? `.env.${options.env}` : '.env'
 })
