@@ -13,7 +13,6 @@ import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import { uploadFileToS3 } from '~/utils/s3'
 import mime from 'mime'
 import { rimrafSync } from 'rimraf'
-
 class Queue {
   items: string[]
   encoding: boolean
@@ -134,8 +133,8 @@ class MediasService {
         }
         // return {
         //   url: isProduction
-        //     ? `${process.env.HOST}/static/image/${newFullFileName}`
-        //     : `http://localhost:${process.env.port}/static/image/${newFullFileName}`,
+        //     ? `${envConfig.host}/static/image/${newFullFileName}`
+        //     : `http://localhost:${envConfig.port}/static/image/${newFullFileName}`,
         //   type: MediaType.Image
         // }
       })
@@ -159,8 +158,8 @@ class MediasService {
         }
         // return {
         //   url: isProduction
-        //     ? `${process.env.HOST}/static/video/${file.newFilename}`
-        //     : `http://localhost:${process.env.port}/static/video/${file.newFilename}`,
+        //     ? `${envConfig.host}/static/video/${file.newFilename}`
+        //     : `http://localhost:${envConfig.port}/static/video/${file.newFilename}`,
         //   type: MediaType.Video
         // }
       })

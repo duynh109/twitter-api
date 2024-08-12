@@ -1,0 +1,8 @@
+version: '3'
+services:
+  twitter:
+    image: nguyenhoangduy/twitter:v0
+    ports:
+      - '4000:4000'
+    volumes:
+      - 'D:/Code/Twitter/uploads:/app/uploads'
